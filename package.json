@@ -1,0 +1,26 @@
+{
+  "name": "transcript-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/backend/electron/main.js",
+  "bin": {
+    "transcript-studio": "./dist/backend/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.backend.json && vite build",
+    "typecheck": "tsc -p tsconfig.backend.json --noEmit && tsc -p tsconfig.frontend.json --noEmit",
+    "start": "node dist/backend/cli/index.js start",
+    "cli": "node dist/backend/cli/index.js",
+    "electron": "electron ./dist/backend/electron/main.js",
+    "test": "vitest run",
+    "audit": "npm audit"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "electron": "^42.3.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
+  }
+}

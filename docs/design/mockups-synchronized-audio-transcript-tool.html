@@ -1,0 +1,1246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sync Transcript Studio Mockups</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f8;
+      --surface: #ffffff;
+      --surface-soft: #f0f3f5;
+      --ink: #172026;
+      --muted: #65727d;
+      --line: #d8dee4;
+      --line-strong: #b9c4cc;
+      --accent: #0b6bcb;
+      --accent-soft: #dcecff;
+      --good: #13795b;
+      --warn: #9a5b00;
+      --danger: #a13030;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .page {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .document-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: 26px;
+      line-height: 1.15;
+    }
+
+    h2 {
+      margin-top: 28px;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    h3 {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .meta {
+      min-width: 260px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--muted);
+    }
+
+    .meta strong {
+      color: var(--ink);
+      display: block;
+      font-size: 13px;
+    }
+
+    .mockup {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 22px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .mockup-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+
+    .mockup-title span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .app-shell {
+      min-height: 480px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      background: var(--surface);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #101820;
+      color: #fff;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      min-width: 180px;
+    }
+
+    .brand strong {
+      font-size: 15px;
+    }
+
+    .brand span {
+      color: #c8d1da;
+      font-size: 12px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button,
+    .button,
+    .chip,
+    select,
+    input {
+      min-height: 32px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 6px 10px;
+      font: inherit;
+    }
+
+    .topbar button {
+      border-color: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .ghost {
+      background: transparent;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      min-height: 0;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: #fbfcfd;
+      padding: 14px;
+      overflow: auto;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      margin-bottom: 14px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .section-body {
+      padding: 12px;
+    }
+
+    .track {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .track:last-child {
+      border-bottom: 0;
+    }
+
+    .track-name {
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    .track-meta,
+    .small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .track-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-button {
+      width: 32px;
+      min-width: 32px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+    }
+
+    .offset-row,
+    .form-row {
+      display: grid;
+      grid-template-columns: 130px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 7px 0;
+    }
+
+    .stepper {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .timeline-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .timecode {
+      font-family: var(--mono);
+      font-size: 24px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .transport {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .waveform-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .wave-row {
+      display: grid;
+      grid-template-columns: 100px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wave {
+      position: relative;
+      height: 56px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0,
+          transparent 58px,
+          rgba(23, 32, 38, 0.06) 59px,
+          transparent 60px
+        ),
+        linear-gradient(180deg, #f7fafc, #edf2f6);
+    }
+
+    .peaks {
+      position: absolute;
+      inset: 12px 10px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .peaks i {
+      display: block;
+      width: 4px;
+      border-radius: 2px;
+      background: #427aa1;
+    }
+
+    .playhead {
+      position: absolute;
+      left: 41%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--danger);
+    }
+
+    .playhead::before {
+      content: "";
+      position: absolute;
+      left: -5px;
+      top: 0;
+      width: 12px;
+      height: 12px;
+      background: var(--danger);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+
+    .drift-grid {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px 12px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--good);
+    }
+
+    .dot.warn {
+      background: var(--warn);
+    }
+
+    .transcript-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 14px;
+    }
+
+    .combined-review {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .player-strip {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 12px;
+    }
+
+    .player-strip-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .mini-wave-stack {
+      display: grid;
+      gap: 6px;
+    }
+
+    .mini-wave-row {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr) 78px;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .mini-wave {
+      position: relative;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      overflow: hidden;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0,
+          transparent 42px,
+          rgba(23, 32, 38, 0.08) 43px,
+          transparent 44px
+        ),
+        linear-gradient(180deg, #f9fbfd, #edf2f6);
+    }
+
+    .mini-wave::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      top: 9px;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #8bb5d1 0 18%, #427aa1 18% 35%, #a8c5d8 35% 48%, #427aa1 48% 73%, #b6cad8 73% 100%);
+    }
+
+    .mini-wave .playhead {
+      left: 54%;
+    }
+
+    .combined-transcript {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 14px;
+    }
+
+    .window-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      margin-bottom: 8px;
+    }
+
+    .window-card.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .window-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+
+    .nearest {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #9cc4ea;
+      background: #edf6ff;
+      color: #164d82;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .search {
+      flex: 1 1 260px;
+      min-width: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: var(--muted);
+      background: var(--surface-soft);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    tr.active {
+      background: var(--accent-soft);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .timestamp {
+      font-family: var(--mono);
+      color: var(--accent);
+      white-space: nowrap;
+      font-weight: 650;
+    }
+
+    .speaker {
+      white-space: nowrap;
+      font-weight: 650;
+    }
+
+    .annotation {
+      border-left: 3px solid var(--accent);
+      padding: 10px 12px;
+      background: #f5f9ff;
+      margin-bottom: 10px;
+    }
+
+    .export-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 14px;
+    }
+
+    .radio-list,
+    .check-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .radio-list label,
+    .check-list label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .job-log {
+      font-family: var(--mono);
+      background: #101820;
+      color: #d9e6f2;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 210px;
+      white-space: pre-wrap;
+      font-size: 12px;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .path {
+      font-family: var(--mono);
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      min-height: 24px;
+      border: 1px solid var(--line-strong);
+      border-radius: 5px;
+      background: #fff;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    @media (max-width: 920px) {
+      .document-header,
+      .content,
+      .transcript-layout,
+      .combined-transcript,
+      .export-grid,
+      .settings-grid {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .document-header {
+        display: grid;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .timeline-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .page {
+        max-width: none;
+        padding: 0;
+      }
+
+      .mockup {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="document-header">
+      <div>
+        <h1>Sync Transcript Studio Mockups</h1>
+        <p class="subtitle">HTML representation of the proposed synchronized M4A playback, FFmpeg processing, and transcript navigation tool.</p>
+      </div>
+      <aside class="meta" aria-label="Mockup metadata">
+        <strong>Design artifact</strong>
+        Static HTML, no runtime dependencies<br>
+        Proposal: proposal-synchronized-audio-transcript-tool.md
+      </aside>
+    </header>
+
+    <section class="mockup" aria-labelledby="load-workspace">
+      <div class="mockup-title">
+        <h2 id="load-workspace">1. Load Workspace</h2>
+        <span>Audio import, track state, and manual alignment controls</span>
+      </div>
+      <div class="app-shell">
+        <div class="topbar">
+          <div class="brand">
+            <strong>Sync Transcript Studio</strong>
+            <span>Local session: GTF prep call</span>
+          </div>
+          <div class="toolbar" aria-label="Primary actions">
+            <button type="button" class="primary">Load Audio</button>
+            <button type="button">Load Transcript JSONL</button>
+            <button type="button">Open Session</button>
+            <button type="button" class="ghost">Settings</button>
+          </div>
+        </div>
+        <div class="content">
+          <aside class="sidebar">
+            <div class="section">
+              <div class="section-header">
+                <h3>Tracks</h3>
+                <span class="small">3 loaded</span>
+              </div>
+              <div class="section-body">
+                <div class="track">
+                  <input type="checkbox" checked aria-label="Select mic track">
+                  <div>
+                    <div class="track-name">recording...mic.m4a</div>
+                    <div class="track-meta">44:12.245 - AAC - 48 kHz - stereo</div>
+                  </div>
+                  <div class="track-actions">
+                    <button type="button" class="icon-button" aria-label="Mute mic">M</button>
+                    <button type="button" class="icon-button" aria-label="Solo mic">S</button>
+                  </div>
+                </div>
+                <div class="track">
+                  <input type="checkbox" checked aria-label="Select system track">
+                  <div>
+                    <div class="track-name">recording...system.m4a</div>
+                    <div class="track-meta">44:12.245 - AAC - 48 kHz - stereo</div>
+                  </div>
+                  <div class="track-actions">
+                    <button type="button" class="icon-button" aria-label="Mute system">M</button>
+                    <button type="button" class="icon-button" aria-label="Solo system">S</button>
+                  </div>
+                </div>
+                <div class="track">
+                  <input type="checkbox" aria-label="Select mixed derived track">
+                  <div>
+                    <div class="track-name">recording...mixed.m4a</div>
+                    <div class="track-meta">44:12.245 - AAC - 96 kHz - mono - derived</div>
+                  </div>
+                  <div class="track-actions">
+                    <button type="button" class="icon-button" aria-label="Mute mixed">M</button>
+                    <button type="button" class="icon-button" aria-label="Solo mixed">S</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+          <section class="main" aria-label="Alignment workspace">
+            <div class="section">
+              <div class="section-header">
+                <h3>Session Alignment</h3>
+                <span class="status"><span class="dot"></span> Metadata match</span>
+              </div>
+              <div class="section-body">
+                <div class="form-row">
+                  <label>Session zero</label>
+                  <div class="path">2026-05-14T12:59:51Z</div>
+                </div>
+                <div class="offset-row">
+                  <span>mic.m4a</span>
+                  <div class="stepper">
+                    <button type="button">-0.250</button>
+                    <button type="button">-0.050</button>
+                    <button type="button">0</button>
+                    <button type="button">+0.050</button>
+                    <button type="button">+0.250</button>
+                  </div>
+                </div>
+                <div class="offset-row">
+                  <span>system.m4a</span>
+                  <div class="stepper">
+                    <button type="button">-0.250</button>
+                    <button type="button">-0.050</button>
+                    <button type="button">0</button>
+                    <button type="button">+0.050</button>
+                    <button type="button">+0.250</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="section">
+              <div class="section-header">
+                <h3>Transcript Files</h3>
+                <span class="small">2 JSONL files</span>
+              </div>
+              <div class="section-body">
+                <div class="track">
+                  <span class="kbd">T</span>
+                  <div>
+                    <div class="track-name">recording...transcript.jsonl</div>
+                    <div class="track-meta">135 segments - speaker/source/language fields</div>
+                  </div>
+                  <span class="status"><span class="dot"></span> Ready</span>
+                </div>
+                <div class="track">
+                  <span class="kbd">Q</span>
+                  <div>
+                    <div class="track-name">recording...questions.jsonl</div>
+                    <div class="track-meta">qa-sidecar/v1 - timeline annotation</div>
+                  </div>
+                  <span class="status"><span class="dot"></span> Attached</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="mockup" aria-labelledby="playback-workspace">
+      <div class="mockup-title">
+        <h2 id="playback-workspace">2. Synchronized Playback Workspace</h2>
+        <span>Selected-track transport, waveform stack, and drift monitor</span>
+      </div>
+      <div class="app-shell">
+        <div class="topbar">
+          <div class="brand">
+            <strong>Sync Transcript Studio</strong>
+            <span>Playback review</span>
+          </div>
+          <div class="toolbar">
+            <button type="button">Tracks</button>
+            <button type="button" class="primary">Playback</button>
+            <button type="button">Transcript</button>
+            <button type="button">Export</button>
+          </div>
+        </div>
+        <section class="main">
+          <div class="timeline-head">
+            <div>
+              <div class="timecode">00:13:28.420 / 00:44:12.245</div>
+              <div class="small">Active tracks: mic.m4a, system.m4a</div>
+            </div>
+            <div class="transport" aria-label="Transport controls">
+              <button type="button" class="icon-button" aria-label="Rewind ten seconds">&lt;&lt;</button>
+              <button type="button" class="icon-button" aria-label="Rewind five seconds">&lt;</button>
+              <button type="button" class="primary" aria-label="Pause selected tracks">Pause</button>
+              <button type="button" class="icon-button" aria-label="Forward five seconds">&gt;</button>
+              <button type="button" class="icon-button" aria-label="Forward ten seconds">&gt;&gt;</button>
+              <input type="text" value="00:13:52" aria-label="Go to timestamp">
+              <button type="button">Go</button>
+            </div>
+          </div>
+          <div class="waveform-stack" aria-label="Waveform stack">
+            <div class="wave-row">
+              <strong>mic.m4a</strong>
+              <div class="wave" aria-hidden="true">
+                <div class="peaks">
+                  <i style="height: 8px"></i><i style="height: 20px"></i><i style="height: 13px"></i><i style="height: 28px"></i><i style="height: 35px"></i><i style="height: 14px"></i><i style="height: 25px"></i><i style="height: 11px"></i><i style="height: 33px"></i><i style="height: 18px"></i><i style="height: 38px"></i><i style="height: 20px"></i><i style="height: 12px"></i><i style="height: 30px"></i><i style="height: 16px"></i><i style="height: 24px"></i><i style="height: 34px"></i><i style="height: 10px"></i><i style="height: 19px"></i><i style="height: 28px"></i><i style="height: 15px"></i><i style="height: 32px"></i><i style="height: 17px"></i><i style="height: 22px"></i>
+                </div>
+                <div class="playhead"></div>
+              </div>
+            </div>
+            <div class="wave-row">
+              <strong>system.m4a</strong>
+              <div class="wave" aria-hidden="true">
+                <div class="peaks">
+                  <i style="height: 12px"></i><i style="height: 16px"></i><i style="height: 26px"></i><i style="height: 18px"></i><i style="height: 11px"></i><i style="height: 36px"></i><i style="height: 20px"></i><i style="height: 28px"></i><i style="height: 15px"></i><i style="height: 34px"></i><i style="height: 16px"></i><i style="height: 19px"></i><i style="height: 25px"></i><i style="height: 31px"></i><i style="height: 14px"></i><i style="height: 29px"></i><i style="height: 20px"></i><i style="height: 13px"></i><i style="height: 34px"></i><i style="height: 17px"></i><i style="height: 23px"></i><i style="height: 31px"></i><i style="height: 14px"></i><i style="height: 20px"></i>
+                </div>
+                <div class="playhead"></div>
+              </div>
+            </div>
+          </div>
+          <div class="section" style="margin-top: 14px;">
+            <div class="section-header">
+              <h3>Drift Monitor</h3>
+              <span class="small">Warning 50 ms - correction 100 ms</span>
+            </div>
+            <div class="section-body drift-grid">
+              <strong>mic.m4a</strong><span>master</span><span class="status"><span class="dot"></span>0 ms</span>
+              <strong>system.m4a</strong><span>aligned</span><span class="status"><span class="dot"></span>+12 ms</span>
+              <strong>mixed.m4a</strong><span>inactive</span><span class="status"><span class="dot warn"></span>not selected</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="mockup" aria-labelledby="transcript-view">
+      <div class="mockup-title">
+        <h2 id="transcript-view">3. Transcript Navigation View</h2>
+        <span>Searchable transcript rows that seek selected audio tracks</span>
+      </div>
+      <div class="app-shell">
+        <div class="topbar">
+          <div class="brand">
+            <strong>Sync Transcript Studio</strong>
+            <span>Transcript presentation</span>
+          </div>
+          <div class="toolbar">
+            <button type="button">Tracks</button>
+            <button type="button">Playback</button>
+            <button type="button" class="primary">Transcript</button>
+            <button type="button">Export</button>
+          </div>
+        </div>
+        <section class="main transcript-layout">
+          <div>
+            <div class="filter-bar">
+              <input class="search" type="search" value="fragmentation" aria-label="Search transcript">
+              <select aria-label="Speaker filter"><option>Speaker: All</option></select>
+              <select aria-label="Source filter"><option>Source: All</option></select>
+              <select aria-label="Language filter"><option>Language: All</option></select>
+              <button type="button">Only Selected Tracks</button>
+            </div>
+            <table aria-label="Transcript table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Speaker</th>
+                  <th>Transcript</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="timestamp">00:13:52</td>
+                  <td class="speaker">Speaker 2</td>
+                  <td>Ilya, I am sorry, can I jump in?</td>
+                </tr>
+                <tr class="active">
+                  <td class="timestamp">00:13:56</td>
+                  <td class="speaker">Speaker 2</td>
+                  <td>Actually, as I told you, the second panelist here is the deputy minister of finance.</td>
+                </tr>
+                <tr>
+                  <td class="timestamp">00:14:03</td>
+                  <td class="speaker">Speaker 2</td>
+                  <td>Ah, is he? Oh right, I do not have it yet in the program on the drive.</td>
+                </tr>
+                <tr>
+                  <td class="timestamp">00:16:26</td>
+                  <td class="speaker">Speaker 2</td>
+                  <td>How can we start moving from purely banking finance in Europe towards more capital markets?</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <aside>
+            <div class="section">
+              <div class="section-header">
+                <h3>Current Segment</h3>
+                <span class="timestamp">00:13:56</span>
+              </div>
+              <div class="section-body">
+                <p><strong>Speaker 2</strong></p>
+                <p>Source: system<br>Language: en<br>Model: soniox</p>
+                <button type="button" class="primary">Seek Selected Tracks</button>
+              </div>
+            </div>
+            <div class="annotation">
+              <strong>Q&amp;A sidecar</strong>
+              <p class="small">Question at 00:24:26: "Can you explain the term ICF in the context of this discussion?"</p>
+            </div>
+          </aside>
+        </section>
+      </div>
+    </section>
+
+    <section class="mockup" aria-labelledby="combined-transcript-view">
+      <div class="mockup-title">
+        <h2 id="combined-transcript-view">3b. Transcript Navigation With Playback Context</h2>
+        <span>Combined synced playback and transcript-window navigation</span>
+      </div>
+      <div class="app-shell">
+        <div class="topbar">
+          <div class="brand">
+            <strong>Sync Transcript Studio</strong>
+            <span>Combined review</span>
+          </div>
+          <div class="toolbar">
+            <button type="button">Tracks</button>
+            <button type="button">Playback</button>
+            <button type="button" class="primary">Transcript</button>
+            <button type="button">Export</button>
+          </div>
+        </div>
+        <section class="main combined-review">
+          <div class="player-strip" aria-label="Synchronized playback strip">
+            <div class="player-strip-top">
+              <div>
+                <div class="timecode">00:14:01.280</div>
+                <div class="small">Nearest transcript window: 00:13:56 - 00:14:12</div>
+              </div>
+              <div class="transport">
+                <button type="button" class="icon-button" aria-label="Rewind ten seconds">&lt;&lt;</button>
+                <button type="button" class="icon-button" aria-label="Rewind five seconds">&lt;</button>
+                <button type="button" class="primary" aria-label="Start or pause playback">Play</button>
+                <button type="button" class="icon-button" aria-label="Forward five seconds">&gt;</button>
+                <button type="button" class="icon-button" aria-label="Forward ten seconds">&gt;&gt;</button>
+                <input type="text" value="00:14:01" aria-label="Playback timestamp">
+                <button type="button">Go</button>
+              </div>
+            </div>
+            <div class="mini-wave-stack">
+              <div class="mini-wave-row">
+                <strong>mic.m4a</strong>
+                <div class="mini-wave" aria-hidden="true"><div class="playhead"></div></div>
+                <span class="status"><span class="dot"></span>master</span>
+              </div>
+              <div class="mini-wave-row">
+                <strong>system.m4a</strong>
+                <div class="mini-wave" aria-hidden="true"><div class="playhead"></div></div>
+                <span class="status"><span class="dot"></span>+12 ms</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="combined-transcript">
+            <div>
+              <div class="filter-bar">
+                <input class="search" type="search" value="minister finance" aria-label="Search transcript windows">
+                <select aria-label="Window size filter"><option>Window: Auto grouped</option></select>
+                <select aria-label="Speaker filter"><option>Speaker: All</option></select>
+                <button type="button" class="primary">Move Viewer To Playhead</button>
+                <button type="button">Nearest Previous</button>
+                <button type="button">Nearest Next</button>
+              </div>
+
+              <div class="window-card">
+                <div class="window-card-header">
+                  <span class="timestamp">00:13:52 - 00:13:56</span>
+                  <button type="button">Seek Audio</button>
+                </div>
+                <strong>Speaker 2</strong>
+                <p>Ilya, I am sorry, can I jump in?</p>
+              </div>
+
+              <div class="window-card active">
+                <div class="window-card-header">
+                  <span class="timestamp">00:13:56 - 00:14:12</span>
+                  <span class="nearest">nearest to playhead</span>
+                </div>
+                <strong>Speaker 2</strong>
+                <p>Actually, as I told you, the second panelist here is the deputy minister of finance. Ah, is he? Oh right, I do not have it yet in the program on the drive.</p>
+                <div class="toolbar">
+                  <button type="button" class="primary">Seek Selected Tracks Here</button>
+                  <button type="button">Pin Window</button>
+                  <button type="button">Expand Context</button>
+                </div>
+              </div>
+
+              <div class="window-card">
+                <div class="window-card-header">
+                  <span class="timestamp">00:14:12 - 00:15:03</span>
+                  <button type="button">Seek Audio</button>
+                </div>
+                <strong>Speaker 2</strong>
+                <p>This will make the panel very challenging in terms of order of speakers because if I have to give another public official the floor...</p>
+              </div>
+            </div>
+
+            <aside>
+              <div class="section">
+                <div class="section-header">
+                  <h3>Playback-to-Transcript Matching</h3>
+                  <span class="status"><span class="dot"></span>Auto selected</span>
+                </div>
+                <div class="section-body">
+                  <div class="form-row">
+                    <label>Playhead</label>
+                    <span class="timestamp">00:14:01.280</span>
+                  </div>
+                  <div class="form-row">
+                    <label>Nearest start</label>
+                    <span class="timestamp">00:13:56</span>
+                  </div>
+                  <div class="form-row">
+                    <label>Distance</label>
+                    <span>5.280 seconds after window start</span>
+                  </div>
+                  <div class="form-row">
+                    <label>Window span</label>
+                    <span>16 seconds</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-header">
+                  <h3>Navigation Behavior</h3>
+                  <span class="small">Design intent</span>
+                </div>
+                <div class="section-body">
+                  <p>Moving playback updates the transcript viewer to the nearest transcription window, even when the ASR segment spans several seconds or minutes.</p>
+                  <p>Clicking a window moves all selected audio tracks to the window start or to a manually chosen point inside the window.</p>
+                  <div class="toolbar">
+                    <button type="button">Seek To Window Start</button>
+                    <button type="button">Seek To Playhead Match</button>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="mockup" aria-labelledby="processing-view">
+      <div class="mockup-title">
+        <h2 id="processing-view">4. Audio Processing and Export View</h2>
+        <span>Non-destructive FFmpeg job setup</span>
+      </div>
+      <div class="app-shell">
+        <div class="topbar">
+          <div class="brand">
+            <strong>Sync Transcript Studio</strong>
+            <span>Processing</span>
+          </div>
+          <div class="toolbar">
+            <button type="button">Tracks</button>
+            <button type="button">Playback</button>
+            <button type="button">Transcript</button>
+            <button type="button" class="primary">Export</button>
+          </div>
+        </div>
+        <section class="main export-grid">
+          <div class="section">
+            <div class="section-header">
+              <h3>Export Job</h3>
+              <span class="small">Selected tracks: mic.m4a, system.m4a</span>
+            </div>
+            <div class="section-body">
+              <div class="form-row">
+                <label>Export type</label>
+                <div class="radio-list">
+                  <label><input type="radio" name="export-type"> Source-separated</label>
+                  <label><input type="radio" name="export-type" checked> Mixed review file</label>
+                  <label><input type="radio" name="export-type"> Both</label>
+                </div>
+              </div>
+              <div class="form-row">
+                <label>Alignment</label>
+                <div class="radio-list">
+                  <label><input type="radio" name="alignment" checked> Use current offsets</label>
+                  <label><input type="radio" name="alignment"> Recompute from metadata</label>
+                </div>
+              </div>
+              <div class="form-row">
+                <label>Processing</label>
+                <div class="check-list">
+                  <label><input type="checkbox"> Apply afftdn denoise preset</label>
+                  <label><input type="checkbox" checked> Calibrate with loudnorm</label>
+                </div>
+              </div>
+              <div class="form-row">
+                <label>Loudness target</label>
+                <select aria-label="Loudness target">
+                  <option>-16 LUFS</option>
+                  <option>-18 LUFS</option>
+                  <option>-23 LUFS</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Output</label>
+                <div class="path">./exports/recording-2026-05-14-15-59.review.m4a</div>
+              </div>
+              <div class="toolbar">
+                <button type="button">Preview 30 seconds</button>
+                <button type="button" class="primary">Run Export</button>
+                <button type="button">Show FFmpeg Plan</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-log" aria-label="FFmpeg command preview">ffprobe input files
+normalize timestamps
+apply current offsets
+amix selected tracks
+loudnorm measure pass
+loudnorm render pass
+write derived output
+preserve originals</div>
+        </section>
+      </div>
+    </section>
+
+    <section class="mockup" aria-labelledby="settings-view">
+      <div class="mockup-title">
+        <h2 id="settings-view">5. Settings and Session View</h2>
+        <span>Explicit prerequisites and no fallback configuration</span>
+      </div>
+      <div class="app-shell">
+        <div class="topbar">
+          <div class="brand">
+            <strong>Sync Transcript Studio</strong>
+            <span>Session settings</span>
+          </div>
+          <div class="toolbar">
+            <button type="button">Tracks</button>
+            <button type="button">Playback</button>
+            <button type="button">Transcript</button>
+            <button type="button" class="primary">Settings</button>
+          </div>
+        </div>
+        <section class="main settings-grid">
+          <div class="section">
+            <div class="section-header">
+              <h3>FFmpeg</h3>
+              <span class="status"><span class="dot"></span> Verified</span>
+            </div>
+            <div class="section-body">
+              <div class="form-row">
+                <label>FFmpeg path</label>
+                <div><span class="path">/opt/homebrew/bin/ffmpeg</span> <button type="button">Verify</button></div>
+              </div>
+              <div class="form-row">
+                <label>FFprobe path</label>
+                <div><span class="path">/opt/homebrew/bin/ffprobe</span> <button type="button">Verify</button></div>
+              </div>
+              <div class="form-row">
+                <label>Output folder</label>
+                <div><span class="path">./exports</span> <button type="button">Choose</button></div>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-header">
+              <h3>Synchronization</h3>
+              <span class="small">Session policy</span>
+            </div>
+            <div class="section-body">
+              <div class="form-row">
+                <label>Warning threshold</label>
+                <input type="text" value="0.050 seconds" aria-label="Sync warning threshold">
+              </div>
+              <div class="form-row">
+                <label>Correction threshold</label>
+                <input type="text" value="0.100 seconds" aria-label="Sync correction threshold">
+              </div>
+              <div class="form-row">
+                <label>Transcript anchor</label>
+                <select aria-label="Transcript anchor">
+                  <option>Audio creation time</option>
+                  <option>Earliest transcript time</option>
+                  <option>Manual session zero</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Privacy</label>
+                <span class="status"><span class="dot"></span>Local-only processing</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

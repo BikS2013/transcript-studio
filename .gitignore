@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+out/
+coverage/
+
+# Local runtime data
+.transcript-studio/
+.sync-transcript-studio/
+exports/
+
+# Logs and diagnostics
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment and local configuration
+.env
+.env.*
+!.env.example
+
+# TypeScript and Vite caches
+*.tsbuildinfo
+.vite/
+.vite-temp/
+
+# Test and tooling caches
+.coverage/
+.nyc_output/
+.vitest/
+.cache/
+
+# Electron packaging output
+release/
+releases/
+dist-electron/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
