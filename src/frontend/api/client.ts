@@ -6,6 +6,12 @@ import type {
   ProcessingPlan,
   ProcessingPlanRequest,
   ProcessingRunResult,
+  TranscriptionJob,
+  TranscriptionJobStartResponse,
+  TranscriptionJobsResponse,
+  TranscriptionPlan,
+  TranscriptionPlanRequest,
+  TranscriptionProvidersResponse,
   TranscriptBundle
 } from "../../shared/types";
 
@@ -132,6 +138,32 @@ export class StudioApiClient {
       method: "POST",
       body: JSON.stringify(payload)
     });
+  }
+
+  async listTranscriptionProviders(): Promise<TranscriptionProvidersResponse> {
+    return requestJson<TranscriptionProvidersResponse>("/api/transcription/providers", { method: "GET" });
+  }
+
+  async planTranscription(payload: TranscriptionPlanRequest): Promise<TranscriptionPlan> {
+    return requestJson<TranscriptionPlan>("/api/transcription/plan", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  }
+
+  async startTranscriptionJobs(payload: TranscriptionPlanRequest): Promise<TranscriptionJobStartResponse> {
+    return requestJson<TranscriptionJobStartResponse>("/api/transcription/jobs", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  }
+
+  async listTranscriptionJobs(): Promise<TranscriptionJobsResponse> {
+    return requestJson<TranscriptionJobsResponse>("/api/transcription/jobs", { method: "GET" });
+  }
+
+  async getTranscriptionJob(jobId: string): Promise<TranscriptionJob> {
+    return requestJson<TranscriptionJob>(`/api/transcription/jobs/${encodeURIComponent(jobId)}`, { method: "GET" });
   }
 }
 

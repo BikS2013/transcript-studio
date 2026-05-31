@@ -83,6 +83,69 @@ describe("StudioApiClient", () => {
     );
   });
 
+  it("uses the transcription provider endpoint", async () => {
+    const fetchMock = vi.fn(async () =>
+      response({
+        providers: [],
+        warnings: []
+      })
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await new StudioApiClient().listTranscriptionProviders();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/transcription/providers",
+      expect.objectContaining({
+        method: "GET"
+      })
+    );
+  });
+
+  it("sends transcription planning payloads to the backend", async () => {
+    const fetchMock = vi.fn(async () =>
+      response({
+        provider: {
+          id: "apple-local",
+          label: "Apple local speech",
+          privacyMode: "local",
+          capabilities: {
+            speakerDiarization: "unsupported",
+            segmentTimestamps: "supported",
+            languageDetection: "unsupported",
+            multiLanguage: "unknown",
+            confidenceScores: "supported",
+            localOnly: true
+          }
+        },
+        languageHints: ["en-US"],
+        diarize: false,
+        outputs: [],
+        warnings: []
+      })
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await new StudioApiClient().planTranscription({
+      inputPaths: ["/tmp/a.m4a"],
+      providerId: "apple-local",
+      languageHints: ["en-US"],
+      diarize: false
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/transcription/plan",
+      expect.objectContaining({
+        body: JSON.stringify({
+          inputPaths: ["/tmp/a.m4a"],
+          providerId: "apple-local",
+          languageHints: ["en-US"],
+          diarize: false
+        })
+      })
+    );
+  });
+
   it("uploads dropped M4A files to the local staging endpoint", async () => {
     const staged: DroppedMediaResult = {
       originalFileName: "session.m4a",

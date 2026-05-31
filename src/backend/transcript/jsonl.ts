@@ -247,6 +247,11 @@ function normalizeSegment(
     ...(stringField(record, "source") === undefined ? {} : { source: stringField(record, "source") as string }),
     ...(stringField(record, "model") === undefined ? {} : { model: stringField(record, "model") as string }),
     ...(stringField(record, "language") === undefined ? {} : { language: stringField(record, "language") as string }),
+    ...(numberField(record, "confidence") === undefined ? {} : { confidence: numberField(record, "confidence") as number }),
+    ...(transcriptionProviderField(record, "provider") === undefined
+      ? {}
+      : { provider: transcriptionProviderField(record, "provider") as "soniox" | "apple-local" | "elevenlabs" }),
+    ...(stringField(record, "providerResultRef") === undefined ? {} : { providerResultRef: stringField(record, "providerResultRef") as string }),
     ...(timing.wallTimeIso === undefined ? {} : { wallTimeIso: timing.wallTimeIso }),
     ...(timing.explicitStartMs === undefined ? {} : { explicitStartMs: timing.explicitStartMs }),
     ...(numberField(record, "durationSec") === undefined ? {} : { durationMs: secondsToMs(numberField(record, "durationSec") as number) }),
@@ -362,6 +367,14 @@ function stringField(record: Record<string, unknown>, key: string): string | und
 function numberField(record: Record<string, unknown>, key: string): number | undefined {
   const value = record[key];
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+function transcriptionProviderField(
+  record: Record<string, unknown>,
+  key: string
+): "soniox" | "apple-local" | "elevenlabs" | undefined {
+  const value = stringField(record, key);
+  return value === "soniox" || value === "apple-local" || value === "elevenlabs" ? value : undefined;
 }
 
 function isIsoTimestamp(value: string): boolean {

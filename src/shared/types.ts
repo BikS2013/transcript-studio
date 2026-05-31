@@ -66,6 +66,9 @@ export interface TranscriptSegment {
   source?: string;
   model?: string;
   language?: string;
+  confidence?: number;
+  provider?: TranscriptionProviderId;
+  providerResultRef?: string;
   wallTimeIso?: string;
   startMs: number;
   durationMs?: number;
@@ -140,11 +143,97 @@ export interface ProcessingRunResult {
 
 export interface DerivedOutput {
   id: string;
-  kind: ProcessingKind | "transcript-html";
+  kind: ProcessingKind | "transcript-html" | "transcription-jsonl" | "transcription-provider-json";
   path: string;
   createdAtIso: string;
   sourcePaths: string[];
   sizeBytes?: number;
+}
+
+export type TranscriptionProviderId = "soniox" | "apple-local" | "elevenlabs";
+
+export type TranscriptionPrivacyMode = "external-upload" | "local";
+
+export type TranscriptionCapabilitySupport = "supported" | "unsupported" | "unknown";
+
+export interface TranscriptionCapabilities {
+  speakerDiarization: TranscriptionCapabilitySupport;
+  segmentTimestamps: TranscriptionCapabilitySupport;
+  languageDetection: TranscriptionCapabilitySupport;
+  multiLanguage: TranscriptionCapabilitySupport;
+  confidenceScores: TranscriptionCapabilitySupport;
+  localOnly: boolean;
+}
+
+export interface TranscriptionProviderInfo {
+  id: TranscriptionProviderId;
+  label: string;
+  privacyMode: TranscriptionPrivacyMode;
+  capabilities: TranscriptionCapabilities;
+}
+
+export interface TranscriptionWarning {
+  code: string;
+  message: string;
+  providerId?: TranscriptionProviderId;
+}
+
+export interface TranscriptionOutputPlan {
+  inputPath: string;
+  canonicalJsonlPath: string;
+  providerJsonPath: string;
+}
+
+export interface TranscriptionPlanRequest {
+  inputPaths: string[];
+  providerId?: TranscriptionProviderId;
+  languageHints?: string[];
+  model?: string;
+  diarize?: boolean;
+  confirmExternalUpload?: boolean;
+  failOnCapabilityGap?: boolean;
+}
+
+export interface TranscriptionPlan {
+  provider: TranscriptionProviderInfo;
+  model?: string;
+  languageHints: string[];
+  diarize: boolean;
+  outputs: TranscriptionOutputPlan[];
+  warnings: TranscriptionWarning[];
+}
+
+export interface TranscriptionProvidersResponse {
+  providers: TranscriptionProviderInfo[];
+  defaultProviderId?: TranscriptionProviderId;
+  warnings: TranscriptionWarning[];
+}
+
+export type TranscriptionJobState = "queued" | "planning" | "running" | "writing" | "succeeded" | "failed";
+
+export interface TranscriptionJobOutput extends TranscriptionOutputPlan {
+  canonicalSegmentCount?: number;
+}
+
+export interface TranscriptionJob {
+  id: string;
+  state: TranscriptionJobState;
+  providerId?: TranscriptionProviderId;
+  inputPaths: string[];
+  progressText: string;
+  warnings: TranscriptionWarning[];
+  outputs: TranscriptionJobOutput[];
+  createdAtIso: string;
+  updatedAtIso: string;
+  error?: string;
+}
+
+export interface TranscriptionJobStartResponse {
+  jobs: TranscriptionJob[];
+}
+
+export interface TranscriptionJobsResponse {
+  jobs: TranscriptionJob[];
 }
 
 export interface SessionManifest {

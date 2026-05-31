@@ -19,6 +19,10 @@ import type {
   ProcessingRunResult,
   SessionManifest,
   TrackStatus,
+  TranscriptionJob,
+  TranscriptionPlan,
+  TranscriptionProviderId,
+  TranscriptionProviderInfo,
   TranscriptBundle,
   TranscriptParagraph
 } from "../shared/types";
@@ -56,6 +60,17 @@ interface AppState {
   processingRunResult: ProcessingRunResult | undefined;
   exportOutputPath: string;
   exportResult: Record<string, unknown> | undefined;
+  transcriptionProviders: TranscriptionProviderInfo[];
+  transcriptionDefaultProviderId: TranscriptionProviderId | undefined;
+  transcriptionProviderId: TranscriptionProviderId | "";
+  transcriptionScope: "active" | "selected" | "session";
+  transcriptionLanguageDraft: string;
+  transcriptionModelDraft: string;
+  transcriptionDiarize: boolean;
+  transcriptionConfirmExternalUpload: boolean;
+  transcriptionFailOnCapabilityGap: boolean;
+  transcriptionPlan: TranscriptionPlan | undefined;
+  transcriptionJobs: TranscriptionJob[];
   sidebarWidthPx: number;
   processingWidthPx: number;
 }
@@ -98,6 +113,17 @@ const state: AppState = {
   processingRunResult: undefined,
   exportOutputPath: "",
   exportResult: undefined,
+  transcriptionProviders: [],
+  transcriptionDefaultProviderId: undefined,
+  transcriptionProviderId: "",
+  transcriptionScope: "active",
+  transcriptionLanguageDraft: "",
+  transcriptionModelDraft: "",
+  transcriptionDiarize: true,
+  transcriptionConfirmExternalUpload: false,
+  transcriptionFailOnCapabilityGap: false,
+  transcriptionPlan: undefined,
+  transcriptionJobs: [],
   sidebarWidthPx: 340,
   processingWidthPx: 360
 };
@@ -113,6 +139,10 @@ async function boot(): Promise<void> {
   render();
   try {
     state.health = await api.health();
+    const transcription = await api.listTranscriptionProviders();
+    state.transcriptionProviders = transcription.providers;
+    state.transcriptionDefaultProviderId = transcription.defaultProviderId;
+    state.transcriptionProviderId = transcription.defaultProviderId ?? transcription.providers[0]?.id ?? "";
     state.statusMessage = state.health.ok
       ? "Backend ready. FFmpeg and ffprobe prerequisites are available."
       : "Backend reachable, but one or more prerequisites need attention.";
@@ -457,6 +487,8 @@ function renderProcessingPanel(): string {
         <ul class="warning-list">${warningBlock}</ul>
         <div class="result-box">${escapeHtml(runValue)}</div>
         <div class="divider"></div>
+        ${renderTranscriptionPanel()}
+        <div class="divider"></div>
         <label class="field">
           <span>HTML transcript output</span>
           <input data-field="exportOutputPath" value="${escapeAttr(state.exportOutputPath)}" placeholder="/absolute/path/transcript.html">
@@ -470,6 +502,107 @@ function renderProcessingPanel(): string {
 
 function renderKindOption(kind: ProcessingKind, label: string): string {
   return `<option value="${kind}" ${kind === state.processingKind ? "selected" : ""}>${label}</option>`;
+}
+
+function renderTranscriptionPanel(): string {
+  const selectedProvider = getSelectedTranscriptionProvider();
+  const providerOptions = state.transcriptionProviders.length
+    ? state.transcriptionProviders
+        .map(
+          (provider) =>
+            `<option value="${provider.id}" ${provider.id === state.transcriptionProviderId ? "selected" : ""}>${escapeHtml(provider.label)}</option>`
+        )
+        .join("")
+    : `<option value="">No providers loaded</option>`;
+  const capabilities = selectedProvider
+    ? Object.entries(selectedProvider.capabilities)
+        .filter(([key]) => key !== "localOnly")
+        .map(([key, value]) => `<span class="capability ${String(value)}">${escapeHtml(key)}: ${escapeHtml(String(value))}</span>`)
+        .join("")
+    : `<span class="muted-text">Capabilities unavailable.</span>`;
+  const uploadConsent =
+    selectedProvider?.privacyMode === "external-upload"
+      ? `<label class="check-line consent-line">
+          <input type="checkbox" data-action="toggle-transcription-consent" ${state.transcriptionConfirmExternalUpload ? "checked" : ""}>
+          <span>Allow this job to upload source audio to ${escapeHtml(selectedProvider.label)}</span>
+        </label>`
+      : `<div class="privacy-note">Local/private transcription provider selected.</div>`;
+  const planValue = state.transcriptionPlan ? stringifyResult(state.transcriptionPlan as unknown as Record<string, unknown>) : "No transcription plan requested yet.";
+  const jobs = state.transcriptionJobs.length
+    ? state.transcriptionJobs.map((job) => renderTranscriptionJob(job)).join("")
+    : `<div class="empty">No transcription jobs started yet.</div>`;
+
+  return `
+    <section class="transcription-section">
+      <div class="subsection-header">
+        <h3>Transcription</h3>
+        <span>${escapeHtml(selectedProvider?.privacyMode ?? "not configured")}</span>
+      </div>
+      <label class="field">
+        <span>Provider</span>
+        <select data-field="transcriptionProviderId">${providerOptions}</select>
+      </label>
+      <div class="capability-list">${capabilities}</div>
+      <label class="field">
+        <span>Scope</span>
+        <select data-field="transcriptionScope">
+          ${renderTranscriptionScopeOption("active", "Active track")}
+          ${renderTranscriptionScopeOption("selected", "Selected tracks")}
+          ${renderTranscriptionScopeOption("session", "Entire session")}
+        </select>
+      </label>
+      <label class="field">
+        <span>Language or locale</span>
+        <input data-field="transcriptionLanguageDraft" value="${escapeAttr(state.transcriptionLanguageDraft)}" placeholder="en or en-US">
+      </label>
+      <label class="field">
+        <span>Model override</span>
+        <input data-field="transcriptionModelDraft" value="${escapeAttr(state.transcriptionModelDraft)}" placeholder="Provider model id">
+      </label>
+      <div class="two-checks">
+        <label class="check-line">
+          <input type="checkbox" data-action="toggle-transcription-diarize" ${state.transcriptionDiarize ? "checked" : ""}>
+          <span>Diarize</span>
+        </label>
+        <label class="check-line">
+          <input type="checkbox" data-action="toggle-transcription-capability-gap" ${state.transcriptionFailOnCapabilityGap ? "checked" : ""}>
+          <span>Fail on capability gap</span>
+        </label>
+      </div>
+      ${uploadConsent}
+      <div class="button-row">
+        <button type="button" data-action="plan-transcription">Plan transcription</button>
+        <button type="button" class="primary" data-action="start-transcription">Start transcription</button>
+        <button type="button" data-action="refresh-transcription-jobs">Refresh jobs</button>
+      </div>
+      <div class="job-log compact" aria-label="Transcription plan">${escapeHtml(planValue)}</div>
+      <div class="transcription-jobs">${jobs}</div>
+    </section>
+  `;
+}
+
+function renderTranscriptionScopeOption(value: AppState["transcriptionScope"], label: string): string {
+  return `<option value="${value}" ${value === state.transcriptionScope ? "selected" : ""}>${label}</option>`;
+}
+
+function renderTranscriptionJob(job: TranscriptionJob): string {
+  const outputs = job.outputs
+    .map(
+      (output) =>
+        `<div class="job-output">
+          <button type="button" data-action="load-generated-transcript" data-transcript-path="${escapeAttr(output.canonicalJsonlPath)}">Load JSONL</button>
+          <span>${escapeHtml(output.canonicalJsonlPath)}</span>
+        </div>`
+    )
+    .join("");
+  return `
+    <article class="transcription-job ${job.state}">
+      <div><strong>${escapeHtml(job.providerId ?? "provider")}</strong> ${escapeHtml(job.state)}</div>
+      <div>${escapeHtml(job.progressText)}</div>
+      ${job.error ? `<div class="inline-error">${escapeHtml(job.error)}</div>` : ""}
+      ${outputs}
+    </article>
+  `;
 }
 
 root.addEventListener("input", (event) => {
@@ -745,6 +878,29 @@ async function handleAction(action: string, trackId: string, node: HTMLElement):
       case "export-html":
         await exportHtmlTranscript();
         break;
+      case "toggle-transcription-consent":
+        state.transcriptionConfirmExternalUpload = !state.transcriptionConfirmExternalUpload;
+        break;
+      case "toggle-transcription-diarize":
+        state.transcriptionDiarize = !state.transcriptionDiarize;
+        state.transcriptionPlan = undefined;
+        break;
+      case "toggle-transcription-capability-gap":
+        state.transcriptionFailOnCapabilityGap = !state.transcriptionFailOnCapabilityGap;
+        state.transcriptionPlan = undefined;
+        break;
+      case "plan-transcription":
+        await requestTranscriptionPlan();
+        break;
+      case "start-transcription":
+        await startTranscription();
+        break;
+      case "refresh-transcription-jobs":
+        await refreshTranscriptionJobs();
+        break;
+      case "load-generated-transcript":
+        await loadTranscriptPaths([node.dataset["transcriptPath"] ?? ""]);
+        break;
       default:
         return;
     }
@@ -771,6 +927,16 @@ function setField(field: string, value: string): void {
     state.processingOutputPath = value;
   } else if (field === "exportOutputPath") {
     state.exportOutputPath = value;
+  } else if (field === "transcriptionProviderId" && isTranscriptionProviderId(value)) {
+    state.transcriptionProviderId = value;
+    state.transcriptionConfirmExternalUpload = false;
+    state.transcriptionPlan = undefined;
+  } else if (field === "transcriptionScope" && isTranscriptionScope(value)) {
+    state.transcriptionScope = value;
+  } else if (field === "transcriptionLanguageDraft") {
+    state.transcriptionLanguageDraft = value;
+  } else if (field === "transcriptionModelDraft") {
+    state.transcriptionModelDraft = value;
   }
   render();
 }
@@ -970,6 +1136,89 @@ async function exportHtmlTranscript(): Promise<void> {
 
   state.exportResult = await api.exportTranscriptHtml({ outputPath, transcriptBundle });
   state.statusMessage = "HTML transcript export requested.";
+}
+
+async function requestTranscriptionPlan(): Promise<void> {
+  state.transcriptionPlan = await api.planTranscription(transcriptionPayload());
+  state.statusMessage = "Transcription plan generated.";
+}
+
+async function startTranscription(): Promise<void> {
+  const payload = transcriptionPayload();
+  state.statusMessage = "Starting transcription job(s).";
+  render();
+  const response = await api.startTranscriptionJobs(payload);
+  state.transcriptionJobs = response.jobs;
+  state.statusMessage = `Started ${response.jobs.length} transcription job(s).`;
+  window.setTimeout(() => {
+    void refreshTranscriptionJobs().catch((error) => {
+      state.errorMessage = errorToMessage(error);
+      render();
+    });
+  }, 1_000);
+}
+
+async function refreshTranscriptionJobs(): Promise<void> {
+  state.transcriptionJobs = (await api.listTranscriptionJobs()).jobs;
+  const active = state.transcriptionJobs.some((job) => job.state !== "succeeded" && job.state !== "failed");
+  state.statusMessage = "Transcription job status refreshed.";
+  render();
+  if (active) {
+    window.setTimeout(() => {
+      void refreshTranscriptionJobs().catch((error) => {
+        state.errorMessage = errorToMessage(error);
+        render();
+      });
+    }, 2_000);
+  }
+}
+
+function transcriptionPayload(): {
+  inputPaths: string[];
+  providerId?: TranscriptionProviderId;
+  languageHints?: string[];
+  model?: string;
+  diarize: boolean;
+  confirmExternalUpload: boolean;
+  failOnCapabilityGap: boolean;
+} {
+  const inputPaths = transcriptionInputPaths();
+  const providerId = state.transcriptionProviderId;
+  const languageHints = state.transcriptionLanguageDraft
+    .split(",")
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+  const model = state.transcriptionModelDraft.trim();
+  return {
+    inputPaths,
+    ...(providerId === "" ? {} : { providerId }),
+    ...(languageHints.length === 0 ? {} : { languageHints }),
+    ...(model.length === 0 ? {} : { model }),
+    diarize: state.transcriptionDiarize,
+    confirmExternalUpload: state.transcriptionConfirmExternalUpload,
+    failOnCapabilityGap: state.transcriptionFailOnCapabilityGap
+  };
+}
+
+function transcriptionInputPaths(): string[] {
+  if (state.transcriptionScope === "active") {
+    const active = state.tracks.find((track) => track.id === state.selectedTrackId) ?? getSelectedTracks()[0];
+    if (active === undefined) {
+      throw new Error("Select an active track before transcribing.");
+    }
+    return [active.path];
+  }
+  if (state.transcriptionScope === "selected") {
+    const selected = getSelectedTracks();
+    if (selected.length === 0) {
+      throw new Error("Select at least one track before transcribing.");
+    }
+    return selected.map((track) => track.path);
+  }
+  if (state.tracks.length === 0) {
+    throw new Error("Load a session with at least one track before transcribing.");
+  }
+  return state.tracks.map((track) => track.path);
 }
 
 async function playSelected(): Promise<void> {
@@ -1253,6 +1502,10 @@ function getSelectedTracks(): AudioTrack[] {
   return state.tracks.filter((track) => track.selected);
 }
 
+function getSelectedTranscriptionProvider(): TranscriptionProviderInfo | undefined {
+  return state.transcriptionProviders.find((provider) => provider.id === state.transcriptionProviderId);
+}
+
 function getMasterTrack(): AudioTrack | undefined {
   const selected = getSelectedTracks();
   return selected.find((track) => track.id === state.selectedTrackId) ?? selected[0];
@@ -1398,6 +1651,8 @@ function resetWorkspace(): void {
   state.processingPlan = undefined;
   state.processingRunResult = undefined;
   state.exportResult = undefined;
+  state.transcriptionPlan = undefined;
+  state.transcriptionJobs = [];
   state.statusMessage = "Workspace reset.";
   state.errorMessage = "";
 }
@@ -1408,6 +1663,14 @@ function clearError(): void {
 
 function isProcessingKind(value: string): value is ProcessingKind {
   return value === "mix" || value === "source-separated" || value === "denoise" || value === "loudness";
+}
+
+function isTranscriptionProviderId(value: string): value is TranscriptionProviderId {
+  return value === "soniox" || value === "apple-local" || value === "elevenlabs";
+}
+
+function isTranscriptionScope(value: string): value is AppState["transcriptionScope"] {
+  return value === "active" || value === "selected" || value === "session";
 }
 
 function statusTone(status: TrackStatus): string {

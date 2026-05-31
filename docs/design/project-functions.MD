@@ -129,3 +129,55 @@ The tool must expose a canonical `transcript-studio` command that starts the loc
 ### F-032: Electron Desktop UI Surface
 
 The tool must provide a locally runnable Electron desktop app, launchable through `transcript-studio ui`, that starts the same local backend, loads the existing Transcript Studio workspace, preserves local-only processing, and does not duplicate FFmpeg, transcript, staging, or playback logic.
+
+### F-033: Multi-Provider M4A Transcription
+
+The tool should support M4A transcription through a provider abstraction that can route jobs to Soniox API, Apple local speech transcription, or ElevenLabs API.
+
+### F-034: Transcription Provider Default and Override
+
+The tool should use a configured default transcription provider when no provider is selected explicitly, and it must allow CLI and Electron UI users to override the provider per transcription job.
+
+### F-035: Transcription Workflow Scopes
+
+The tool should support transcription for a single M4A file, a batch of selected M4A files, and all M4A files in a session.
+
+### F-036: External Upload Consent
+
+The tool must clearly identify Soniox and ElevenLabs transcription as external-upload operations and require explicit user confirmation before sending audio to those APIs.
+
+### F-037: Apple Local Transcription Privacy
+
+The tool should support Apple local speech transcription as the local/private transcription provider and must fail explicitly when the requested Apple local provider is unavailable on the current platform, OS version, locale, or installed speech model set.
+
+### F-038: Canonical and Provider-Native Transcription Outputs
+
+The tool must save both canonical Transcript Studio JSONL and provider-native JSON for each successful transcription job.
+
+### F-039: Transcription Output Location and Collision Safety
+
+The tool must save generated transcription files next to the source M4A file, use explicit derived-output names, and refuse to overwrite existing files.
+
+### F-040: Transcription Metadata
+
+The tool should preserve speaker diarization, segment-level timestamps, language information, multi-language indicators, and confidence scores where the selected provider supports those capabilities.
+
+### F-041: Transcription Capability Reporting
+
+The tool must expose provider capability differences to CLI and Electron UI users, including unsupported capabilities such as Apple local speaker diarization unless later validated.
+
+### F-042: Transcription Configuration Validation
+
+The tool must validate transcription configuration through the project-standard configuration precedence chain, require API-key expiration metadata for external providers, and raise explicit errors for missing or expired required values.
+
+### F-043: Transcription Job Status
+
+The tool must report transcription job status, provider, input path, output paths, warnings, and explicit provider or configuration errors.
+
+### F-044: Generated Transcript Loading
+
+The tool should allow users to load a generated canonical JSONL transcript into the existing transcript review and navigation workflow after a successful transcription job.
+
+### F-045: No Silent Transcription Fallback
+
+The tool must not silently retry or switch to another transcription provider after a selected provider fails.

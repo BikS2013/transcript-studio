@@ -10,7 +10,14 @@ import { probeAudioFile } from "../ffmpeg/probe.js";
 import { runProcessingPlan } from "../ffmpeg/runner.js";
 import { stageDroppedM4a, stageDroppedTranscript } from "../media/drop.js";
 import { exportTranscriptHtml, loadJsonlTranscripts, writeTranscriptHtml } from "../transcript/jsonl.js";
-import type { ProcessingPlanRequest, TranscriptBundle } from "../../shared/types.js";
+import {
+  buildTranscriptionPlan,
+  getTranscriptionJob,
+  getTranscriptionProvidersResponse,
+  listTranscriptionJobs,
+  startTranscriptionJobs
+} from "../transcription/jobs.js";
+import type { ProcessingPlanRequest, TranscriptionPlanRequest, TranscriptBundle } from "../../shared/types.js";
 
 const API_MAX_BODY_BYTES = 5 * 1024 * 1024;
 
@@ -136,6 +143,28 @@ async function routeRequest(request: IncomingMessage, response: ServerResponse):
     if (request.method === "POST" && url.pathname === "/api/process/run") {
       const body = await readJsonBody(request);
       await sendJson(response, 200, await runProcessingPlan(body as unknown as ProcessingPlanRequest));
+      return;
+    }
+    if (request.method === "GET" && url.pathname === "/api/transcription/providers") {
+      await sendJson(response, 200, await getTranscriptionProvidersResponse());
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/transcription/plan") {
+      const body = await readJsonBody(request);
+      await sendJson(response, 200, await buildTranscriptionPlan({ request: body as unknown as TranscriptionPlanRequest }));
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/transcription/jobs") {
+      const body = await readJsonBody(request);
+      await sendJson(response, 202, await startTranscriptionJobs({ request: body as unknown as TranscriptionPlanRequest }));
+      return;
+    }
+    if (request.method === "GET" && url.pathname === "/api/transcription/jobs") {
+      await sendJson(response, 200, listTranscriptionJobs());
+      return;
+    }
+    if (request.method === "GET" && url.pathname.startsWith("/api/transcription/jobs/")) {
+      await sendJson(response, 200, getTranscriptionJob(decodeURIComponent(url.pathname.slice("/api/transcription/jobs/".length))));
       return;
     }
     if (request.method === "GET" && url.pathname === "/api/media") {

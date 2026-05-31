@@ -33,6 +33,8 @@ transcript-studio --help
 transcript-studio start --port 5123
 transcript-studio ui
 transcript-studio ui --port 5123
+transcript-studio transcribe --input /path/audio.m4a --provider soniox --confirm-external-upload
+transcript-studio transcribe --session /path/session.json --provider apple-local --language en-US
 ```
 
 ## Implemented Scope
@@ -46,3 +48,12 @@ transcript-studio ui --port 5123
 - Resize the Tracks/Session sidebar and Processing panel to balance workspace content.
 - Export transcript presentation HTML.
 - Build and run FFmpeg plans for mix, source-separated, denoise, and loudness jobs without shell-interpolated command strings.
+- Transcribe M4A files through Soniox, ElevenLabs, or a configured Apple local helper.
+- Save transcription outputs next to each source M4A as canonical Transcript Studio JSONL plus provider-native JSON.
+- Plan and run transcription jobs from the CLI and the Electron/browser UI.
+
+## Transcription Configuration
+
+Set `TRANSCRIPT_STUDIO_TRANSCRIPTION_DEFAULT_PROVIDER` when jobs should use a default provider. Soniox requires `SONIOX_API_KEY`, `SONIOX_API_KEY_EXPIRES_AT`, and `SONIOX_STT_MODEL`. ElevenLabs requires `ELEVENLABS_API_KEY`, `ELEVENLABS_API_KEY_EXPIRES_AT`, and `ELEVENLABS_STT_MODEL`. Apple local requires `TRANSCRIPT_STUDIO_APPLE_TRANSCRIPTION_LOCALE` unless a language is supplied, plus `TRANSCRIPT_STUDIO_APPLE_TRANSCRIBER_PATH` pointing to the built helper executable.
+
+Soniox and ElevenLabs upload source audio and require explicit per-job consent. Apple local transcription is the local/private option.

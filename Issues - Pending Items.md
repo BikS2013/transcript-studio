@@ -23,7 +23,46 @@
 - Context: FFmpeg job status and errors are exposed, but cancellation is not implemented yet.
 - Resolution needed: Decide whether cancellation is required before additional export workflows are added.
 
+### P4: Add Soniox API key expiration metadata
+
+- Status: pending
+- Detected: 2026-05-31
+- Context: The Soniox configuration has `SONIOX_API_KEY` and `SONIOX_STT_MODEL`, but `SONIOX_API_KEY_EXPIRES_AT` is not configured. Transcript Studio currently treats this as a warning, while the tool documentation says expiration metadata is required so users can be warned before credential expiry.
+- Resolution needed: Add `SONIOX_API_KEY_EXPIRES_AT` with the real credential expiration date, or decide whether non-expiring Soniox keys should be documented explicitly.
+
 ## Completed Items
+
+### C24: Isolated transcription endpoint tests from user-level tool config
+
+- Status: completed
+- Detected: 2026-05-31
+- Completed: 2026-05-31
+- Issue: The full test suite could read the real `~/.tool-agents/transcript-studio/.env` file during transcription endpoint tests, so changing the user-level Soniox model to `stt-async-v4` caused a test that expected its own `SONIOX_STT_MODEL=stt-async-v3` environment value to fail.
+- Solution: Updated the endpoint test to isolate `HOME` to its temporary directory for the config-resolution scenario and restore it after each test, making the suite independent of user-level Transcript Studio configuration.
+
+### C23: Resolved Soniox transcription model and token-spacing issues
+
+- Status: completed
+- Detected: 2026-05-31
+- Completed: 2026-05-31
+- Issue: Running Soniox transcription for `recording-2026-05-14-15-59.system.m4a` initially failed during job creation because the configured `SONIOX_STT_MODEL` was `stt-rt-v4`, a real-time model, while Transcript Studio's Soniox adapter uses the async transcription workflow. After retrying with `stt-async-v4`, the generated canonical JSONL exposed a second issue: Soniox v4 token fragments use leading whitespace to mark word boundaries, but the normalizer trimmed token text and inserted spaces between every fragment, producing text such as `gu ess` and `By e`.
+- Solution: Retried the Soniox job with `stt-async-v4`, updated `~/.tool-agents/transcript-studio/.env` so future Soniox CLI runs use `SONIOX_STT_MODEL=stt-async-v4`, fixed Soniox token normalization to preserve provider token spacing, added regression coverage for Soniox v4 subword tokens, rebuilt the project, and regenerated the canonical JSONL from the provider-native JSON.
+
+### C22: Resolved Apple local transcription locale mismatch for system recording
+
+- Status: completed
+- Detected: 2026-05-31
+- Completed: 2026-05-31
+- Issue: Running Apple local transcription for `recording-2026-05-14-15-59.system.m4a` with locale `en-US` failed because the local Apple Speech transcription assets reported installed locale identifiers with underscores, including `en_US`, and rejected the hyphenated locale form.
+- Solution: Built the Apple transcription helper, inspected installed local SpeechTranscriber locales, retried the transcription with the installed `en_US` locale identifier, and verified the generated canonical JSONL and provider-native JSON outputs.
+
+### C21: Implemented multi-provider M4A transcription
+
+- Status: completed
+- Detected: 2026-05-31
+- Completed: 2026-05-31
+- Issue: Transcript Studio had a completed proposal for Soniox, Apple local, and ElevenLabs transcription, but no implementation for provider planning, configuration validation, job execution, CLI usage, UI controls, or output writing.
+- Solution: Added the shared transcription model, backend provider registry, config validation, output planning, provider adapters, normalization, in-memory jobs, backend endpoints, `transcript-studio transcribe`, Processing-panel transcription controls, Apple helper source, docs, and focused regression tests.
 
 ### C20: Added project gitignore
 
@@ -131,6 +170,7 @@
 
 ## Dependency Vetting Log
 
+- 2026-05-31: No dependencies were added for multi-provider M4A transcription; the implementation uses Node built-ins, native `fetch`/`FormData`, and a Swift helper source for Apple local transcription.
 - 2026-05-31: Vetted and added `electron@^42.3.0` for the Transcript Studio Electron UI. npm reported `42.3.0` as the latest stable version, package metadata showed no deprecation notice, and install-time audit reported zero vulnerabilities.
 - 2026-05-31: No dependencies were added for self-contained relocation; only project documents and filesystem location changed.
 - 2026-05-31: No dependencies were added for resizable panel support; the implementation uses CSS grid variables and native pointer/keyboard events only.

@@ -152,6 +152,24 @@ The project is self-contained in this folder. Application source, package metada
   - `docs/reference/implementation-report-transcript-studio-cli-electron-2026-05-31.md`
 - Rationale: The existing local browser workspace already contains the core playback, transcript, staging, and FFmpeg behavior. A CLI launcher and thin Electron desktop shell provide the requested surfaces while avoiding duplicate processing implementations.
 
+### Decision 013: Backend-Owned Multi-Provider Transcription
+
+- Status: implemented
+- Date: 2026-05-31
+- Request source: `docs/reference/refined-request-multi-provider-m4a-transcription.md`
+- Plan: `docs/design/plan-011-multi-provider-m4a-transcription.md`
+- Proposal: `docs/design/proposal-multi-provider-m4a-transcription.md`
+- Implementation report: `docs/reference/implementation-report-multi-provider-m4a-transcription-2026-05-31.md`
+- Investigation: `docs/reference/investigation-multi-provider-m4a-transcription.md`
+- Codebase scan: `docs/reference/codebase-scan-multi-provider-m4a-transcription.md`
+- Research:
+  - `docs/research/soniox-stt-api.md`
+  - `docs/research/elevenlabs-speech-to-text-api.md`
+  - `docs/research/apple-local-speech-transcription.md`
+- Decision: Add M4A transcription through a backend-owned provider abstraction shared by CLI and Electron UI, with provider adapters for Soniox API, Apple local speech transcription, and ElevenLabs API.
+- Rationale: The current backend already owns local file access, derived output collision checks, transcript normalization, and CLI/Electron reuse. Keeping transcription behind the backend prevents duplicated provider logic and keeps external-upload consent, configuration validation, output generation, and explicit error handling consistent across both surfaces.
+- Design notes: Generated transcription artifacts are saved next to each source M4A as canonical Transcript Studio JSONL plus provider-native JSON. Soniox and ElevenLabs are marked as external-upload providers and require per-job consent. Apple local is marked as local/private and is executed through a configured macOS helper path with explicit platform, helper, and locale validation.
+
 ## Open Design Questions
 
 - Should automatic offset detection be required in a future version?
@@ -160,6 +178,7 @@ The project is self-contained in this folder. Application source, package metada
 - Should full session manifest open/save controls be exposed in the UI?
 - Should FFmpeg job cancellation be added to the next implementation slice?
 - Should denoising remain FFmpeg-only, or should a later version support external denoising models?
+- Which transcription provider should be configured as the user's initial default?
 
 ## Design Constraints
 
@@ -170,3 +189,4 @@ The project is self-contained in this folder. Application source, package metada
 - New dependencies must be vetted before being added.
 - Test scripts created outside the package test suite must live under `test_scripts/`.
 - No version-control operation may be performed unless explicitly requested.
+- External speech-to-text providers must require explicit user consent before audio upload.
